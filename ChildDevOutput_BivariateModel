@@ -1,0 +1,895 @@
+This is the Mplus output file for the final bivariate model in Quinn, Wagner, Petscher, & Lopez (2015) published in Child Development
+Full citation: Quinn, J. M., Wagner, R. K., Petscher, Y., & Lopez, D. (2015). Developmental relations between vocabulary knowledge and reading comprehension: A latent change score modeling study. Child Development, 86(1), 159-175.
+
+Mplus VERSION 7.11
+MUTHEN & MUTHEN
+04/23/2015   1:13 PM
+
+INPUT INSTRUCTIONS
+
+  TITLE: BIVARIATE DUAL CHANGE
+         SCORE MODEL OF VOCABULARY
+         AND READING COMPREHENSION
+
+  DATA:
+      FILE IS "E:\Smaller_9.27_z.dat";
+      FORMAT IS 154F8.2 ;
+
+  VARIABLE:
+      NAMES= SS SEX ORF1-ORF12
+      SB1-SB4 WRAT1-WRAT4 WJWID1-WJWID4
+      WJPC1-WJPC4 WJWA1-WJWA4 WJOC1-WJOC4
+      EXPR1-EXPR8 TOWRE1-TOWRE8 TNW1-TNW8 EXPLC1-EXPLC8
+      WASI1-WASI4 WIATWF1-WIATWF4 WIATS1-WIATS4
+      WIATWE1-WIATWE4 WIATSP1-WIATSP4 WRMT1-WRMT4 MEMA1-MEMA4
+      MEMB1-MEMB4 TOSREC1-TOSREC8 TOSRE1-TOSRE8 WUR1-WUR16 SAT1-SAT4
+      WJPCZ1-WJPCZ4 wrmtz1-wrmtz4 SBZ1-SBZ4 WASIZ1-wasiz4;
+
+      USEVAR= SBZ1-SBZ4 WJPCZ1-WJPCZ4 WASIZ1-wasiz4 wrmtz1-wrmtz4;
+  missing=blank;
+
+  ANALYSIS:  COVERAGE = .0001;
+             ESTIMATOR = ML;
+             ITERATIONS = 10000;
+             CONVERGENCE = .0001;
+             process=8;
+             model=nocovariances;
+
+
+  MODEL:
+  !!! !!!!!!!PART 1 -- DEFINING VOCAB!!!!!!!!!!!!
+      lvoc1 by sbz1@1 wasiz1(1);
+      lvoc2 by sbz2@1 wasiz2(1);
+      lvoc3 by sbz3@1 wasiz3(1);
+      lvoc4 by sbz4@1 wasiz4(1);
+
+      lvoc2 on lvoc1@1;
+      lvoc3 on lvoc2@1;
+      lvoc4 on lvoc3@1;
+
+      dvoc2 by lvoc2@1;
+      dvoc3 by lvoc3@1;
+      dvoc4 by lvoc4@1;
+
+  !!setting means and vars to 0
+      [lvoc1-lvoc4@0 dvoc2-dvoc4@0];
+      lvoc1-lvoc4@0 dvoc2-dvoc4@0;
+
+  !!! level and slope for VOC
+      g0 by lvoc1@1;
+      g1 by dvoc2-dvoc4@1;
+      [g0] (M0voc);
+      [g1] (Avoc);
+      g0 (V0voc);
+      g1 (V1voc);
+      g0 with g1;
+
+  !!! auto-proportions for VOC
+      dvoc2 on lvoc1 (Bvoc);
+      dvoc3 on lvoc2 (Bvoc);
+      dvoc4 on lvoc3 (Bvoc);
+
+  !!! error var and means set to be equal
+      sbz1-sbz4 (Vesb);
+      wasiz1-wasiz4(Vevoc);
+      [sbz1-sbz4@0 wasiz1-wasiz4@0];
+
+  !!! unwanted correlations
+      dvoc2 with dvoc3-dvoc4@0;
+      dvoc3 with dvoc4@0;
+
+  !!!!!!!!!!Part 2 - defining RC scores!!!!!!!!!!!!!
+      lrc1 by wrmtz1@1 wjpcz1(2);
+      lrc2 by wrmtz2@1 wjpcz2(2);
+      lrc3 by wrmtz3@1 wjpcz3(2);
+      lrc4 by wrmtz4@1 wjpcz4(2);
+
+      lrc2 on lrc1@1;
+      lrc3 on lrc2@1;
+      lrc4 on lrc3@1;
+
+      drc2 by lrc2@1;
+      drc3 by lrc3@1;
+      drc4 by lrc4@1;
+
+  !!setting means and vars to 0
+      [lrc1-lrc4@0 drc2-drc4@0];
+      lrc1-lrc4@0 drc2-drc4@0;
+
+  !!! auto-proprotions for RC
+      drc2 on lrc1 (Brc);
+      drc3 on lrc2 (Brc);
+      drc4 on lrc3 (Brc);
+
+  !!! level and slope for RC
+      h0 by lrc1@1;
+      h1 by drc2-drc4@1;
+      [h0] (M0rc);
+      [h1](Arc);
+      h0 (V0rc);
+      h1 (V1rc);
+      h0 with h1;
+
+  !!! error variance and means
+      wrmtz1-wrmtz4 (Vewr);
+       wjpcz1-wjpcz4(Verc);
+       [wrmtz1-wrmtz4@0
+       wjpcz1-wjpcz4@0];
+
+  !!! unwanted correlations
+      drc2 with drc3-drc4@0;
+      drc3 with drc4@0;
+
+  !!! part 3: bivariate coupling submodel
+
+  ! couplings voc->rc
+     drc2 on lvoc1 (Grc);
+     drc3 on lvoc2 (Grc);
+     drc4 on lvoc3 (Grc);
+
+  !coupling rc->voc
+    ! dvoc2 on lrc1 (Gvoc);
+    ! dvoc3 on lrc2 (Gvoc);
+    ! dvoc4 on lrc3 (Gvoc);
+
+  !correlated within-time residuals
+      sbz1 with wrmtz1 (Ssrc1);
+      sbz1 with wjpcz1 (Ssrc2);
+      wasiz1 with wrmtz1 (Ssrc3);
+      wasiz1 with wjpcz1 (Ssrc4);
+      sbz2 with wrmtz2 (Ssrc1);
+      sbz2 with wjpcz2 (Ssrc2);
+      wasiz2 with wrmtz2 (Ssrc3);
+      wasiz2 with wjpcz2 (Ssrc4);
+      sbz3 with wrmtz3 (Ssrc1);
+      sbz3 with wjpcz3 (Ssrc2);
+      wasiz3 with wrmtz3 (Ssrc3);
+      wasiz3 with wjpcz3 (Ssrc4);
+      sbz4 with wjpcz4 (Ssrc1);
+      sbz4 with wrmtz4 (Ssrc2);
+      wasiz4 with wrmtz4 (Ssrc3);
+      wasiz4 with wjpcz4 (Ssrc4);
+
+   h1 with g1;
+  g0 with h0;
+  h0 with g1;
+  g0 with h1;
+
+
+  OUTPUT: SAMPSTAT RESIDUAL STANDARDIZED TECH4 TECH1 MOD;
+  !PLOT: type= plot3;
+  !Series = wjpcz1-wjpcz4 (*) | wrmtz1-wrmtz4 (*) |
+          !sbz1-sbz4 (*) | wasiz1-wasiz4 (*);
+
+
+
+BIVARIATE DUAL CHANGE
+SCORE MODEL OF VOCABULARY
+AND READING COMPREHENSION
+
+SUMMARY OF ANALYSIS
+
+Number of groups                                                 1
+Number of observations                                         316
+
+Number of dependent variables                                   16
+Number of independent variables                                  0
+Number of continuous latent variables                           18
+
+Observed dependent variables
+
+  Continuous
+   SBZ1        SBZ2        SBZ3        SBZ4        WJPCZ1      WJPCZ2
+   WJPCZ3      WJPCZ4      WASIZ1      WASIZ2      WASIZ3      WASIZ4
+   WRMTZ1      WRMTZ2      WRMTZ3      WRMTZ4
+
+Continuous latent variables
+   LVOC1       LVOC2       LVOC3       LVOC4       DVOC2       DVOC3
+   DVOC4       G0          G1          LRC1        LRC2        LRC3
+   LRC4        DRC2        DRC3        DRC4        H0          H1
+
+
+Estimator                                                       ML
+Information matrix                                        OBSERVED
+Maximum number of iterations                                 10000
+Convergence criterion                                    0.100D-03
+Maximum number of steepest descent iterations                   20
+Maximum number of iterations for H1                           2000
+Convergence criterion for H1                             0.100D-03
+
+Input data file(s)
+  E:\Smaller_9.27_z.dat
+
+Input data format
+  (154F8.2)
+
+
+SAMPLE STATISTICS
+
+
+     ESTIMATED SAMPLE STATISTICS
+
+
+           Means
+              SBZ1          SBZ2          SBZ3          SBZ4          WJPCZ1
+              ________      ________      ________      ________      ________
+      1        -0.001         0.773         1.589         2.157         0.001
+
+
+           Means
+              WJPCZ2        WJPCZ3        WJPCZ4        WASIZ1        WASIZ2
+              ________      ________      ________      ________      ________
+      1         1.210         1.907         2.299         0.007         0.725
+
+
+           Means
+              WASIZ3        WASIZ4        WRMTZ1        WRMTZ2        WRMTZ3
+              ________      ________      ________      ________      ________
+      1         1.530         2.189         0.000         1.005         1.647
+
+
+           Means
+              WRMTZ4
+              ________
+      1         1.999
+
+
+
+
+          Correlations
+              SBZ1          SBZ2          SBZ3          SBZ4          WJPCZ1
+              ________      ________      ________      ________      ________
+ SBZ1           1.000
+ SBZ2           0.543         1.000
+ SBZ3           0.473         0.550         1.000
+ SBZ4           0.523         0.573         0.656         1.000
+ WJPCZ1         0.482         0.477         0.473         0.498         1.000
+ WJPCZ2         0.510         0.567         0.521         0.555         0.758
+ WJPCZ3         0.545         0.558         0.567         0.572         0.696
+ WJPCZ4         0.479         0.492         0.530         0.587         0.570
+ WASIZ1         0.677         0.592         0.558         0.603         0.514
+ WASIZ2         0.552         0.635         0.600         0.637         0.518
+ WASIZ3         0.507         0.567         0.664         0.650         0.539
+ WASIZ4         0.507         0.619         0.609         0.716         0.541
+ WRMTZ1         0.509         0.455         0.462         0.468         0.871
+ WRMTZ2         0.523         0.546         0.512         0.544         0.737
+ WRMTZ3         0.492         0.553         0.512         0.548         0.698
+ WRMTZ4         0.532         0.579         0.527         0.632         0.665
+
+
+           Correlations
+              WJPCZ2        WJPCZ3        WJPCZ4        WASIZ1        WASIZ2
+              ________      ________      ________      ________      ________
+ WJPCZ2         1.000
+ WJPCZ3         0.799         1.000
+ WJPCZ4         0.663         0.658         1.000
+ WASIZ1         0.556         0.547         0.522         1.000
+ WASIZ2         0.607         0.642         0.483         0.653         1.000
+ WASIZ3         0.589         0.600         0.603         0.612         0.720
+ WASIZ4         0.604         0.624         0.580         0.603         0.675
+ WRMTZ1         0.768         0.741         0.571         0.526         0.511
+ WRMTZ2         0.812         0.781         0.663         0.550         0.602
+ WRMTZ3         0.766         0.788         0.698         0.525         0.618
+ WRMTZ4         0.775         0.772         0.729         0.557         0.611
+
+
+           Correlations
+              WASIZ3        WASIZ4        WRMTZ1        WRMTZ2        WRMTZ3
+              ________      ________      ________      ________      ________
+ WASIZ3         1.000
+ WASIZ4         0.705         1.000
+ WRMTZ1         0.531         0.518         1.000
+ WRMTZ2         0.555         0.606         0.764         1.000
+ WRMTZ3         0.628         0.611         0.728         0.787         1.000
+ WRMTZ4         0.668         0.684         0.665         0.795         0.795
+
+
+           Correlations
+              WRMTZ4
+              ________
+ WRMTZ4         1.000
+
+
+     MAXIMUM LOG-LIKELIHOOD VALUE FOR THE UNRESTRICTED (H1) MODEL IS -3850.947
+
+
+THE MODEL ESTIMATION TERMINATED NORMALLY
+
+
+
+MODEL FIT INFORMATION
+
+Number of Free Parameters                       27
+
+Loglikelihood
+
+          H0 Value                       -3952.002
+          H1 Value                       -3850.947
+
+Information Criteria
+
+          Akaike (AIC)                    7958.003
+          Bayesian (BIC)                  8059.408
+          Sample-Size Adjusted BIC        7973.771
+            (n* = (n + 2) / 24)
+
+Chi-Square Test of Model Fit
+
+          Value                            202.109
+          Degrees of Freedom                   125
+          P-Value                           0.0000
+
+RMSEA (Root Mean Square Error Of Approximation)
+
+          Estimate                           0.044
+          90 Percent C.I.                    0.033  0.055
+          Probability RMSEA <= .05           0.801
+
+CFI/TLI
+
+          CFI                                0.979
+          TLI                                0.980
+
+Chi-Square Test of Model Fit for the Baseline Model
+
+          Value                           3827.693
+          Degrees of Freedom                   120
+          P-Value                           0.0000
+
+SRMR (Standardized Root Mean Square Residual)
+
+          Value                              0.042
+
+
+
+MODEL RESULTS
+
+                                                    Two-Tailed
+                    Estimate       S.E.  Est./S.E.    P-Value
+
+ LVOC1    BY
+    SBZ1               1.000      0.000    999.000    999.000
+    WASIZ1             1.013      0.018     56.282      0.000
+
+ LVOC2    BY
+    SBZ2               1.000      0.000    999.000    999.000
+    WASIZ2             1.013      0.018     56.282      0.000
+
+ LVOC3    BY
+    SBZ3               1.000      0.000    999.000    999.000
+    WASIZ3             1.013      0.018     56.282      0.000
+
+ LVOC4    BY
+    SBZ4               1.000      0.000    999.000    999.000
+    WASIZ4             1.013      0.018     56.282      0.000
+
+ LRC1     BY
+    WRMTZ1             1.000      0.000    999.000    999.000
+    WJPCZ1             1.141      0.011     99.337      0.000
+
+ LRC2     BY
+    WRMTZ2             1.000      0.000    999.000    999.000
+    WJPCZ2             1.141      0.011     99.337      0.000
+
+ LRC3     BY
+    WRMTZ3             1.000      0.000    999.000    999.000
+    WJPCZ3             1.141      0.011     99.337      0.000
+
+ LRC4     BY
+    WRMTZ4             1.000      0.000    999.000    999.000
+    WJPCZ4             1.141      0.011     99.337      0.000
+
+ DVOC2    BY
+    LVOC2              1.000      0.000    999.000    999.000
+
+ DVOC3    BY
+    LVOC3              1.000      0.000    999.000    999.000
+
+ DVOC4    BY
+    LVOC4              1.000      0.000    999.000    999.000
+
+ G0       BY
+    LVOC1              1.000      0.000    999.000    999.000
+
+ G1       BY
+    DVOC2              1.000      0.000    999.000    999.000
+    DVOC3              1.000      0.000    999.000    999.000
+    DVOC4              1.000      0.000    999.000    999.000
+
+ DRC2     BY
+    LRC2               1.000      0.000    999.000    999.000
+
+ DRC3     BY
+    LRC3               1.000      0.000    999.000    999.000
+
+ DRC4     BY
+    LRC4               1.000      0.000    999.000    999.000
+
+ H0       BY
+    LRC1               1.000      0.000    999.000    999.000
+
+ H1       BY
+    DRC2               1.000      0.000    999.000    999.000
+    DRC3               1.000      0.000    999.000    999.000
+    DRC4               1.000      0.000    999.000    999.000
+
+ LVOC2    ON
+    LVOC1              1.000      0.000    999.000    999.000
+
+ LVOC3    ON
+    LVOC2              1.000      0.000    999.000    999.000
+
+ LVOC4    ON
+    LVOC3              1.000      0.000    999.000    999.000
+
+ DVOC2    ON
+    LVOC1             -0.087      0.034     -2.519      0.012
+
+ DVOC3    ON
+    LVOC2             -0.087      0.034     -2.519      0.012
+
+ DVOC4    ON
+    LVOC3             -0.087      0.034     -2.519      0.012
+
+ LRC2     ON
+    LRC1               1.000      0.000    999.000    999.000
+
+ LRC3     ON
+    LRC2               1.000      0.000    999.000    999.000
+
+ LRC4     ON
+    LRC3               1.000      0.000    999.000    999.000
+
+ DRC2     ON
+    LRC1              -0.576      0.051    -11.302      0.000
+    LVOC1              0.184      0.057      3.246      0.001
+
+ DRC3     ON
+    LRC2              -0.576      0.051    -11.302      0.000
+    LVOC2              0.184      0.057      3.246      0.001
+
+ DRC4     ON
+    LRC3              -0.576      0.051    -11.302      0.000
+    LVOC3              0.184      0.057      3.246      0.001
+
+ G0       WITH
+    G1                 0.051      0.026      2.010      0.044
+    H0                 0.458      0.052      8.740      0.000
+    H1                 0.096      0.022      4.479      0.000
+
+ DVOC2    WITH
+    DVOC3              0.000      0.000    999.000    999.000
+    DVOC4              0.000      0.000    999.000    999.000
+
+ DVOC3    WITH
+    DVOC4              0.000      0.000    999.000    999.000
+
+ H0       WITH
+    H1                 0.142      0.019      7.436      0.000
+    G1                 0.067      0.023      2.860      0.004
+
+ DRC2     WITH
+    DRC3               0.000      0.000    999.000    999.000
+    DRC4               0.000      0.000    999.000    999.000
+
+ DRC3     WITH
+    DRC4               0.000      0.000    999.000    999.000
+
+ H1       WITH
+    G1                 0.023      0.007      3.264      0.001
+
+ SBZ1     WITH
+    WRMTZ1             0.014      0.009      1.597      0.110
+    WJPCZ1             0.022      0.011      2.030      0.042
+
+ WASIZ1   WITH
+    WRMTZ1             0.020      0.008      2.655      0.008
+    WJPCZ1            -0.004      0.009     -0.391      0.696
+
+ SBZ2     WITH
+    WRMTZ2             0.014      0.009      1.597      0.110
+    WJPCZ2             0.022      0.011      2.030      0.042
+
+ WASIZ2   WITH
+    WRMTZ2             0.020      0.008      2.655      0.008
+    WJPCZ2            -0.004      0.009     -0.391      0.696
+
+ SBZ3     WITH
+    WRMTZ3             0.014      0.009      1.597      0.110
+    WJPCZ3             0.022      0.011      2.030      0.042
+
+ WASIZ3   WITH
+    WRMTZ3             0.020      0.008      2.655      0.008
+    WJPCZ3            -0.004      0.009     -0.391      0.696
+
+ SBZ4     WITH
+    WJPCZ4             0.014      0.009      1.597      0.110
+    WRMTZ4             0.022      0.011      2.030      0.042
+
+ WASIZ4   WITH
+    WRMTZ4             0.020      0.008      2.655      0.008
+    WJPCZ4            -0.004      0.009     -0.391      0.696
+
+ Means
+    G0                -0.012      0.050     -0.237      0.813
+    G1                 0.792      0.031     25.492      0.000
+    H0                -0.003      0.051     -0.058      0.953
+    H1                 1.049      0.021     49.382      0.000
+
+ Intercepts
+    SBZ1               0.000      0.000    999.000    999.000
+    SBZ2               0.000      0.000    999.000    999.000
+    SBZ3               0.000      0.000    999.000    999.000
+    SBZ4               0.000      0.000    999.000    999.000
+    WJPCZ1             0.000      0.000    999.000    999.000
+    WJPCZ2             0.000      0.000    999.000    999.000
+    WJPCZ3             0.000      0.000    999.000    999.000
+    WJPCZ4             0.000      0.000    999.000    999.000
+    WASIZ1             0.000      0.000    999.000    999.000
+    WASIZ2             0.000      0.000    999.000    999.000
+    WASIZ3             0.000      0.000    999.000    999.000
+    WASIZ4             0.000      0.000    999.000    999.000
+    WRMTZ1             0.000      0.000    999.000    999.000
+    WRMTZ2             0.000      0.000    999.000    999.000
+    WRMTZ3             0.000      0.000    999.000    999.000
+    WRMTZ4             0.000      0.000    999.000    999.000
+    LVOC1              0.000      0.000    999.000    999.000
+    LVOC2              0.000      0.000    999.000    999.000
+    LVOC3              0.000      0.000    999.000    999.000
+    LVOC4              0.000      0.000    999.000    999.000
+    DVOC2              0.000      0.000    999.000    999.000
+    DVOC3              0.000      0.000    999.000    999.000
+    DVOC4              0.000      0.000    999.000    999.000
+    LRC1               0.000      0.000    999.000    999.000
+    LRC2               0.000      0.000    999.000    999.000
+    LRC3               0.000      0.000    999.000    999.000
+    LRC4               0.000      0.000    999.000    999.000
+    DRC2               0.000      0.000    999.000    999.000
+    DRC3               0.000      0.000    999.000    999.000
+    DRC4               0.000      0.000    999.000    999.000
+
+ Variances
+    G0                 0.620      0.063      9.895      0.000
+    G1                 0.042      0.010      4.372      0.000
+    H0                 0.769      0.067     11.541      0.000
+    H1                 0.061      0.008      7.571      0.000
+
+ Residual Variances
+    SBZ1               0.471      0.024     19.731      0.000
+    SBZ2               0.471      0.024     19.731      0.000
+    SBZ3               0.471      0.024     19.731      0.000
+    SBZ4               0.471      0.024     19.731      0.000
+    WJPCZ1             0.179      0.009     18.921      0.000
+    WJPCZ2             0.179      0.009     18.921      0.000
+    WJPCZ3             0.179      0.009     18.921      0.000
+    WJPCZ4             0.179      0.009     18.921      0.000
+    WASIZ1             0.330      0.018     18.020      0.000
+    WASIZ2             0.330      0.018     18.020      0.000
+    WASIZ3             0.330      0.018     18.020      0.000
+    WASIZ4             0.330      0.018     18.020      0.000
+    WRMTZ1             0.111      0.006     17.140      0.000
+    WRMTZ2             0.111      0.006     17.140      0.000
+    WRMTZ3             0.111      0.006     17.140      0.000
+    WRMTZ4             0.111      0.006     17.140      0.000
+    LVOC1              0.000      0.000    999.000    999.000
+    LVOC2              0.000      0.000    999.000    999.000
+    LVOC3              0.000      0.000    999.000    999.000
+    LVOC4              0.000      0.000    999.000    999.000
+    DVOC2              0.000      0.000    999.000    999.000
+    DVOC3              0.000      0.000    999.000    999.000
+    DVOC4              0.000      0.000    999.000    999.000
+    LRC1               0.000      0.000    999.000    999.000
+    LRC2               0.000      0.000    999.000    999.000
+    LRC3               0.000      0.000    999.000    999.000
+    LRC4               0.000      0.000    999.000    999.000
+    DRC2               0.000      0.000    999.000    999.000
+    DRC3               0.000      0.000    999.000    999.000
+    DRC4               0.000      0.000    999.000    999.000
+
+
+STANDARDIZED MODEL RESULTS
+
+
+STDYX Standardization
+
+                                                    Two-Tailed
+                    Estimate       S.E.  Est./S.E.    P-Value
+
+ LVOC1    BY
+    SBZ1               0.754      0.019     40.243      0.000
+    WASIZ1             0.812      0.017     49.045      0.000
+
+ LVOC2    BY
+    SBZ2               0.762      0.017     45.662      0.000
+    WASIZ2             0.819      0.015     56.160      0.000
+
+ LVOC3    BY
+    SBZ3               0.784      0.016     48.567      0.000
+    WASIZ3             0.837      0.014     60.634      0.000
+
+ LVOC4    BY
+    SBZ4               0.809      0.016     50.469      0.000
+    WASIZ4             0.858      0.013     63.804      0.000
+
+ LRC1     BY
+    WRMTZ1             0.935      0.006    146.077      0.000
+    WJPCZ1             0.921      0.007    131.764      0.000
+
+ LRC2     BY
+    WRMTZ2             0.896      0.009     96.419      0.000
+    WJPCZ2             0.875      0.011     83.259      0.000
+
+ LRC3     BY
+    WRMTZ3             0.883      0.010     84.360      0.000
+    WJPCZ3             0.860      0.012     73.666      0.000
+
+ LRC4     BY
+    WRMTZ4             0.883      0.011     80.261      0.000
+    WJPCZ4             0.860      0.012     70.956      0.000
+
+ DVOC2    BY
+    LVOC2              0.242      0.029      8.436      0.000
+
+ DVOC3    BY
+    LVOC3              0.206      0.022      9.342      0.000
+
+ DVOC4    BY
+    LVOC4              0.172      0.018      9.528      0.000
+
+ G0       BY
+    LVOC1              1.000      0.000    999.000    999.000
+
+ G1       BY
+    DVOC2              1.054      0.055     19.286      0.000
+    DVOC3              1.154      0.095     12.093      0.000
+    DVOC4              1.264      0.149      8.504      0.000
+
+ DRC2     BY
+    LRC2               0.500      0.044     11.251      0.000
+
+ DRC3     BY
+    LRC3               0.233      0.022     10.609      0.000
+
+ DRC4     BY
+    LRC4               0.122      0.012     10.031      0.000
+
+ H0       BY
+    LRC1               1.000      0.000    999.000    999.000
+
+ H1       BY
+    DRC2               0.738      0.066     11.267      0.000
+    DRC3               1.695      0.199      8.537      0.000
+    DRC4               3.238      0.390      8.308      0.000
+
+ LVOC2    ON
+    LVOC1              0.974      0.024     40.949      0.000
+
+ LVOC3    ON
+    LVOC2              0.933      0.018     51.110      0.000
+
+ LVOC4    ON
+    LVOC3              0.916      0.015     62.084      0.000
+
+ DVOC2    ON
+    LVOC1             -0.350      0.131     -2.660      0.008
+
+ DVOC3    ON
+    LVOC2             -0.393      0.162     -2.419      0.016
+
+ DVOC4    ON
+    LVOC3             -0.461      0.207     -2.226      0.026
+
+ LRC2     ON
+    LRC1               1.311      0.037     35.188      0.000
+
+ LRC3     ON
+    LRC2               1.072      0.020     54.665      0.000
+
+ LRC4     ON
+    LRC3               0.999      0.013     75.123      0.000
+
+ DRC2     ON
+    LRC1              -1.510      0.104    -14.522      0.000
+    LVOC1              0.433      0.118      3.660      0.000
+
+ DRC3     ON
+    LRC2              -2.646      0.407     -6.500      0.000
+    LVOC2              1.021      0.378      2.700      0.007
+
+ DRC4     ON
+    LRC3              -4.715      0.720     -6.548      0.000
+    LVOC3              2.091      0.719      2.908      0.004
+
+ G0       WITH
+    G1                 0.317      0.144      2.193      0.028
+    H0                 0.663      0.041     16.312      0.000
+    H1                 0.496      0.102      4.857      0.000
+
+ DVOC2    WITH
+    DVOC3            999.000    999.000    999.000    999.000
+    DVOC4            999.000    999.000    999.000    999.000
+
+ DVOC3    WITH
+    DVOC4            999.000    999.000    999.000    999.000
+
+ H0       WITH
+    H1                 0.656      0.050     13.056      0.000
+    G1                 0.371      0.104      3.554      0.000
+
+ DRC2     WITH
+    DRC3             999.000    999.000    999.000    999.000
+    DRC4             999.000    999.000    999.000    999.000
+
+ DRC3     WITH
+    DRC4             999.000    999.000    999.000    999.000
+
+ H1       WITH
+    G1                 0.454      0.103      4.401      0.000
+
+ SBZ1     WITH
+    WRMTZ1             0.061      0.038      1.605      0.108
+    WJPCZ1             0.075      0.037      2.046      0.041
+
+ WASIZ1   WITH
+    WRMTZ1             0.107      0.040      2.707      0.007
+    WJPCZ1            -0.015      0.038     -0.391      0.696
+
+ SBZ2     WITH
+    WRMTZ2             0.061      0.038      1.605      0.108
+    WJPCZ2             0.075      0.037      2.046      0.041
+
+ WASIZ2   WITH
+    WRMTZ2             0.107      0.040      2.707      0.007
+    WJPCZ2            -0.015      0.038     -0.391      0.696
+
+ SBZ3     WITH
+    WRMTZ3             0.061      0.038      1.605      0.108
+    WJPCZ3             0.075      0.037      2.046      0.041
+
+ WASIZ3   WITH
+    WRMTZ3             0.107      0.040      2.707      0.007
+    WJPCZ3            -0.015      0.038     -0.391      0.696
+
+ SBZ4     WITH
+    WJPCZ4             0.048      0.030      1.600      0.110
+    WRMTZ4             0.096      0.047      2.041      0.041
+
+ WASIZ4   WITH
+    WRMTZ4             0.107      0.040      2.707      0.007
+    WJPCZ4            -0.015      0.038     -0.391      0.696
+
+ Means
+    G0                -0.015      0.064     -0.237      0.813
+    G1                 3.847      0.384     10.010      0.000
+    H0                -0.003      0.058     -0.058      0.953
+    H1                 4.251      0.264     16.082      0.000
+
+ Intercepts
+    SBZ1               0.000      0.000    999.000    999.000
+    SBZ2               0.000      0.000    999.000    999.000
+    SBZ3               0.000      0.000    999.000    999.000
+    SBZ4               0.000      0.000    999.000    999.000
+    WJPCZ1             0.000      0.000    999.000    999.000
+    WJPCZ2             0.000      0.000    999.000    999.000
+    WJPCZ3             0.000      0.000    999.000    999.000
+    WJPCZ4             0.000      0.000    999.000    999.000
+    WASIZ1             0.000      0.000    999.000    999.000
+    WASIZ2             0.000      0.000    999.000    999.000
+    WASIZ3             0.000      0.000    999.000    999.000
+    WASIZ4             0.000      0.000    999.000    999.000
+    WRMTZ1             0.000      0.000    999.000    999.000
+    WRMTZ2             0.000      0.000    999.000    999.000
+    WRMTZ3             0.000      0.000    999.000    999.000
+    WRMTZ4             0.000      0.000    999.000    999.000
+    LVOC1              0.000      0.000    999.000    999.000
+    LVOC2              0.000      0.000    999.000    999.000
+    LVOC3              0.000      0.000    999.000    999.000
+    LVOC4              0.000      0.000    999.000    999.000
+    DVOC2              0.000      0.000    999.000    999.000
+    DVOC3              0.000      0.000    999.000    999.000
+    DVOC4              0.000      0.000    999.000    999.000
+    LRC1               0.000      0.000    999.000    999.000
+    LRC2               0.000      0.000    999.000    999.000
+    LRC3               0.000      0.000    999.000    999.000
+    LRC4               0.000      0.000    999.000    999.000
+    DRC2               0.000      0.000    999.000    999.000
+    DRC3               0.000      0.000    999.000    999.000
+    DRC4               0.000      0.000    999.000    999.000
+
+ Variances
+    G0                 1.000      0.000    999.000    999.000
+    G1                 1.000      0.000    999.000    999.000
+    H0                 1.000      0.000    999.000    999.000
+    H1                 1.000      0.000    999.000    999.000
+
+ Residual Variances
+    SBZ1               0.432      0.028     15.276      0.000
+    SBZ2               0.419      0.025     16.451      0.000
+    SBZ3               0.386      0.025     15.235      0.000
+    SBZ4               0.345      0.026     13.280      0.000
+    WJPCZ1             0.151      0.013     11.747      0.000
+    WJPCZ2             0.234      0.018     12.749      0.000
+    WJPCZ3             0.260      0.020     12.965      0.000
+    WJPCZ4             0.260      0.021     12.458      0.000
+    WASIZ1             0.341      0.027     12.701      0.000
+    WASIZ2             0.330      0.024     13.803      0.000
+    WASIZ3             0.300      0.023     12.976      0.000
+    WASIZ4             0.264      0.023     11.454      0.000
+    WRMTZ1             0.126      0.012     10.504      0.000
+    WRMTZ2             0.198      0.017     11.908      0.000
+    WRMTZ3             0.221      0.018     11.975      0.000
+    WRMTZ4             0.221      0.019     11.365      0.000
+    LVOC1              0.000    999.000    999.000    999.000
+    LVOC2              0.000    999.000    999.000    999.000
+    LVOC3              0.000    999.000    999.000    999.000
+    LVOC4              0.000    999.000    999.000    999.000
+    DVOC2              0.000    999.000    999.000    999.000
+    DVOC3              0.000    999.000    999.000    999.000
+    DVOC4              0.000    999.000    999.000    999.000
+    LRC1               0.000    999.000    999.000    999.000
+    LRC2               0.000    999.000    999.000    999.000
+    LRC3               0.000    999.000    999.000    999.000
+    LRC4               0.000    999.000    999.000    999.000
+    DRC2               0.000    999.000    999.000    999.000
+    DRC3               0.000    999.000    999.000    999.000
+    DRC4               0.000    999.000    999.000    999.000
+
+R-SQUARE
+
+    Observed                                        Two-Tailed
+    Variable        Estimate       S.E.  Est./S.E.    P-Value
+
+    SBZ1               0.568      0.028     20.122      0.000
+    SBZ2               0.581      0.025     22.831      0.000
+    SBZ3               0.614      0.025     24.283      0.000
+    SBZ4               0.655      0.026     25.234      0.000
+    WJPCZ1             0.849      0.013     65.882      0.000
+    WJPCZ2             0.766      0.018     41.629      0.000
+    WJPCZ3             0.740      0.020     36.833      0.000
+    WJPCZ4             0.740      0.021     35.478      0.000
+    WASIZ1             0.659      0.027     24.522      0.000
+    WASIZ2             0.670      0.024     28.080      0.000
+    WASIZ3             0.700      0.023     30.317      0.000
+    WASIZ4             0.736      0.023     31.902      0.000
+    WRMTZ1             0.874      0.012     73.038      0.000
+    WRMTZ2             0.802      0.017     48.210      0.000
+    WRMTZ3             0.779      0.018     42.180      0.000
+    WRMTZ4             0.779      0.019     40.131      0.000
+
+     Latent                                         Two-Tailed
+    Variable        Estimate       S.E.  Est./S.E.    P-Value
+
+    LVOC1              1.000    999.000    999.000    999.000
+    LVOC2              1.000    999.000    999.000    999.000
+    LVOC3              1.000    999.000    999.000    999.000
+    LVOC4              1.000    999.000    999.000    999.000
+    DVOC2              1.000    999.000    999.000    999.000
+    DVOC3              1.000    999.000    999.000    999.000
+    DVOC4              1.000    999.000    999.000    999.000
+    LRC1               1.000    999.000    999.000    999.000
+    LRC2               1.000    999.000    999.000    999.000
+    LRC3               1.000    999.000    999.000    999.000
+    LRC4               1.000    999.000    999.000    999.000
+    DRC2               1.000    999.000    999.000    999.000
+    DRC3               1.000    999.000    999.000    999.000
+    DRC4               1.000    999.000    999.000    999.000
+
+
+
+
+     Beginning Time:  13:13:31
+        Ending Time:  13:13:35
+       Elapsed Time:  00:00:04
+
+
+
+MUTHEN & MUTHEN
+3463 Stoner Ave.
+Los Angeles, CA  90066
+
+Tel: (310) 391-9971
+Fax: (310) 391-8971
+Web: www.StatModel.com
+Support: Support@StatModel.com
+
+Copyright (c) 1998-2013 Muthen & Muthen
